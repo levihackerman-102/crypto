@@ -43,15 +43,9 @@ state = [
     [64, 80, 182, 255],
 ]
 
-def matrix2bytes(matrix):
-    return bytes(sum(matrix, []))
 
 def sub_bytes(s, sbox=s_box):
-    for i in range(4):
-        for j in range(4):
-            s[i][j] = sbox[s[i][j]]
-    return s
-
+    return "".join([chr(s_box.index(s[x][y])) for x in range(4) for y in range(4)])    
+            
 
 print(sub_bytes(state, sbox=inv_s_box))
-print(matrix2bytes(sub_bytes(state, sbox=inv_s_box)))
