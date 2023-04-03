@@ -1,9 +1,23 @@
 import md5py
-from pwn import remote
+import struct
+from string import printable
 import json
+from pwn import remote, xor
+from tqdm import tqdm
+
+flag_len = 46
+r = remote("socket.cryptohack.org", 13407)
+r.recv()
 
 def bxor(a, b):
     return bytes(x ^ y for x, y in zip(a, b))
+
+def pad(s):
+	padlen = 64 - ((len(s) + 8) % 64)
+	bit_len = 8*len(s)
+	if(padlen < 64):
+		s += '\x80' + '\000' * (padlen - 1)
+	return s + struct.pack('<q', bit_len)
 
 def extend(h, l, a):
     if l%64 != 0:
@@ -14,49 +28,30 @@ def extend(h, l, a):
     ex.update(a)
     return ex.hexdigest()
 
-len = 46
-n = 4
+padding = "\x80\xb8\x05\x00\x00\x00\x00\x00\x00"
+known = "}crypto{i" 
 
-conn = remote('socket.cryptohack.org', '13407')
-print(conn.recvline())
+r.sendline(json.dumps({"option": "message", "data": "00"*183}))
+h = json.loads(r.recvline().strip())["hash"]
+print (h)
 
-data = "00" * (n*len - 1)
+cache = {}
 
-x = '{' + f'"option" : "message", "data" : "{data}"' + '}'
+for c in printable:
+    ex = extend(h, 183, c)
+    cache[ex] = c
 
-print(x)
-
-conn.sendline(x)
-
-hash_json = conn.recvline().decode('utf-8')
-
-json.loads(hash_json)
-
-# hash of 46*n-1 length cyclic flag + padding (let this be S)
-hash = json.loads(hash_json)['hash']
-print(hash)
-
-'''
-To the server, we send 46*n-1 bytes of 00 + xor(b'}crypto{', first 8 bytes of the padding) + xor(9th byte of the padding, y), here y is a brute byte
-if we get the same hash as above our brute of y is correct
-
-padding = 1000 0000 + 8 bytes length field
-'''
-padding = "80"+"00000000000001B8" 
-
-for i in range(256):
-    to_send = "00" * (n*len - 1) 
-    to_send +=  bxor(b'}crypto{', bytes.fromhex(padding[:16])).hex()
-    to_send += bxor(bytes.fromhex(padding[-2:]), bytes([i])).hex()
-    x = '{' + f'"option" : "message", "data" : "{to_send}"' + '}'
-    conn.sendline(x)
-    hash_json = conn.recvline().decode('utf-8')
-    print(i, hash_json)
-    if json.loads(hash_json)['hash'] == hash:
-        print(i)
+flag = "_"
+while True:
+    print ("flag: crypto{i%s"%flag)
+    
+    if flag[-1] == "}":
         break
-
-'''
-Now we know y, perform hash length extension attack to get the hash of S + x where x is a brute byte
-if we get the same hash from the server our brute of x is correct and we move onto the next byte
-'''
+    
+    payload = "00"*183 + xor(known, padding).encode("hex") + "00"*(len(flag) + 1)
+    r.sendline(json.dumps({"option": "message", "data": payload}))
+    k = json.loads(r.recvline().strip())["hash"]
+    for c in printable:
+        if extend(h, 183, flag+c) == k:
+            flag += c
+            break
