@@ -3,7 +3,7 @@
 A while ago I found a construction of collusion-secure, identity-based encryption built solely from RSA. A small group of cryptographers were confident enough in it to write a paper and publish it. But at the same time, the cryptanalysis is constant-time and can be done with undergrad-level number theory. This makes it an attractive CTF problem, in my mind. The system is as follows:
 
 KeyGen():
-    Generate two safe primes p, q for an RSA modulus N=pq. Set Phi(N) = (p-1)(q-1).
+    Generate two safe primes $p$, $q$ for an RSA modulus N=pq. Set Phi(N) = (p-1)(q-1).
     Choose x, a random even integer greater than zero and less than Phi(N).
     Choose g, a generator of Z/NZ.
     Return:
