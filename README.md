@@ -1,2 +1,2 @@
 # crypto
-My solution to crypto resources.
+My solutions to crypto CTFs
