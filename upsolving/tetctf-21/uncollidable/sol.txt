@@ -1,0 +1,2 @@
+Just need to find 10 MAC collisions with atleast one key >= 32 bytes. Zero padding leads to collisions.
+Need one key with 9 zeroes so need to find data whose sha256 ends in 9 zeroes.
