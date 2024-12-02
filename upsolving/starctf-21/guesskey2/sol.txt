@@ -1,0 +1,1 @@
+Keep sending 1...1111 (64 bits) as if the leftmost zero bit is chosen even once as p, the next p will always lie right of it so eventually the whole key will become 2**64-1.

@@ -1,0 +1,1 @@
+just send mask = 000...0 and key remains unchanged
