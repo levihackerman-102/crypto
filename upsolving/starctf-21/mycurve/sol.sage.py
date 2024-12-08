@@ -24,7 +24,7 @@ def mul(k,P):
 			Q=add(P,Q)
 	return Q
 
-# 
+# Mapping (x,) -> (u,v) and (u,v) -> (x,y) for the birational equivalence between the Weierstrass and Binary Edwards 
 def bined2w(P):
 	x,y=P
 	return (d1*(d1**_sage_const_2 +d1+d2)*(x+y)/(x*y+d1*(x+y)),d1*(d1**_sage_const_2 +d1+d2)*(x/(x*y+d1*(x+y))+d1+_sage_const_1 ))

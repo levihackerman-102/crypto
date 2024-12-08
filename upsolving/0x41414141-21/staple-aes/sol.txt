@@ -1,0 +1,5 @@
+Get all possible ciphertexts i.e. 3! = 6 since plaintext has 3 blocks.'
+
+Final block is b'}' + b"\x0f"*15 so we can use known plaintext to get all the possible ivs
+
+Try each iv and get the flag from the ciphertexts

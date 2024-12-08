@@ -42,3 +42,5 @@ P=(F.fetch_int(x),F.fetch_int(y))
 P=E(bined2w(P))
 G=E(bined2w(G))
 print(bytes.fromhex(hex(discrete_log(P,G,G.order(),operation="+"))[2:]))
+
+# *CTF{p01Y_Edw@rds}
