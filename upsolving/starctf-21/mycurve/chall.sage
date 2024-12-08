@@ -2,6 +2,7 @@ from Crypto.Util.number import bytes_to_long
 from flag import flag
 assert flag[:5]=='*CTF{' and flag[-1]=='}'
 flag=flag[5:-1]
+
 def add(P,Q):
 	if Q==0:
 		return P
