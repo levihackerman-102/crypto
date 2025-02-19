@@ -1,1 +1,0 @@
-flag = 'firebird{n0w_rc4_i5_t0t4lly_4_r3d_h3rr1n9}'
